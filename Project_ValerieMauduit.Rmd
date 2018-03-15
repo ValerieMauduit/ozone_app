@@ -1,0 +1,83 @@
+---
+title: "Ozone prediction App"
+author: "Valérie Mauduit"
+date: "15 mars 2018"
+output: ioslides_presentation
+---
+
+## Presentation of the data
+
+```{r dataset, echo = FALSE}
+data("airquality")
+```
+My App uses **airquality** dataset (`r dim(airquality)[1]` rows):
+```{r show, echo=FALSE, eval = TRUE}
+head(airquality, 4)
+```
+
+We use temperature and wind ranges to forward ozone rate depending on solar rays (only graphically). The questions are:
+
+* When temperature increases, does ozone rate increase? decrease?
+* When wind increases, does ozone rate increase? decrease?
+* Does ozone increase depending to solar radiation change with other meteoroligal conditions (wind, temperature?)
+
+
+
+## What do you see?
+Using the sliders (left) you can see how the linear regression ozone depending of solar radiation operates when you wind/temperature ranges changes. It's the red line. For example with wind [1; 10] Mph and temperature [60; 80]°F:
+<center>![](W1_10_T60_80_petit.png)</center>
+
+The line coefficients are:
+```{r lm, echo = FALSE, eval = TRUE}
+subdata <- airquality[airquality$Wind<=10 & airquality$Temp>=60 & 
+                          airquality$Temp<=80,]
+lm(Ozone ~ Solar.R, data = subdata)$coefficients
+```
+
+## Discussion
+
+<div class="columns-2">
+- All temperatures, low wind level:
+```{r evol1, echo = FALSE, eval = TRUE}
+subdata <- airquality[airquality$Wind <= quantile(airquality$Wind, .25),]
+lm(Ozone ~ Solar.R, data = subdata)$coefficients
+```
+- All temperatures, high wind level:
+```{r evol2, echo = FALSE, eval = TRUE}
+subdata <- airquality[airquality$Wind >= quantile(airquality$Wind, .75),]
+lm(Ozone ~ Solar.R, data = subdata)$coefficients
+```
+- All wind levels, low temperature:
+```{r evol3, echo = FALSE, eval = TRUE}
+subdata <- airquality[airquality$Temp <= quantile(airquality$Temp, .25),]
+lm(Ozone ~ Solar.R, data = subdata)$coefficients
+```
+- All wind levels, high temperature:
+```{r evol4, echo = FALSE, eval = TRUE}
+subdata <- airquality[airquality$Temp >= quantile(airquality$Temp, .75),]
+lm(Ozone ~ Solar.R, data = subdata)$coefficients
+```
+</div>
+
+Ozone rate is lower, in mean, when wind is strong or temperature is cold. It is much more depending on solar radiation when low winds.
+
+## Conclusion
+
+To have these coefficients, I use formulas like:
+
+```{r variables, echo = FALSE, eval = TRUE}
+wmin <- 1
+wmax <- 10
+tmin <- 42
+tmax <- 80 
+```
+```{r conclusion, echo = TRUE, eval = TRUE}
+subdata <- airquality[airquality$Wind >= wmin & airquality$Wind <= wmax &
+                      airquality$Temp >= tmin & airquality$Temp <= tmax,]
+lm(Ozone ~ Solar.R, data = subdata)$coefficients
+```
+
+I haven't shown them in all slides.
+
+The app provides a graphic answer (red line) but no *lm* coefficients. Up to you to recalculate them.
+

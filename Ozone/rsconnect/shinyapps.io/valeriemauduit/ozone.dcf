@@ -1,0 +1,12 @@
+name: ozone
+title:
+username:
+account: valeriemauduit
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 299806
+bundleId: 1269586
+url: https://valeriemauduit.shinyapps.io/ozone/
+when: 1521092116.69749
+asMultiple: FALSE
+asStatic: FALSE
